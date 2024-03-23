@@ -20,6 +20,9 @@ dependencies:
   vue:
     specifier: ^3.4.21
     version: 3.4.21(typescript@5.4.2)
+  vue-pick-colors:
+    specifier: ^1.6.3
+    version: 1.6.3(@popperjs/core@2.11.8)(vue@3.4.21)
   vue-router:
     specifier: '4'
     version: 4.3.0(vue@3.4.21)
@@ -601,6 +604,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@popperjs/core@2.11.8:
+    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+    dev: false
 
   /@rollup/pluginutils@5.1.0:
     resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}
@@ -3756,6 +3763,16 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /vue-pick-colors@1.6.3(@popperjs/core@2.11.8)(vue@3.4.21):
+    resolution: {integrity: sha512-heSY2QofdPYA9RlsbEGbByG1VS7X4Ah2kzUITNHQk0aiNI8zDbXl8nUEXQhDUPNQ0Na13VcfDXhmfMvYEGJv9A==}
+    peerDependencies:
+      '@popperjs/core': ^2.11.2
+      vue: ^3.2.26
+    dependencies:
+      '@popperjs/core': 2.11.8
+      vue: 3.4.21(typescript@5.4.2)
+    dev: false
 
   /vue-router@4.3.0(vue@3.4.21):
     resolution: {integrity: sha512-dqUcs8tUeG+ssgWhcPbjHvazML16Oga5w34uCUmsk7i0BcnskoLGwjpa15fqMr2Fa5JgVBrdL2MEgqz6XZ/6IQ==}

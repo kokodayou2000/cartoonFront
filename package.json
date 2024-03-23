@@ -16,6 +16,7 @@
     "pinia": "^2.1.7",
     "signature_pad": "^4.2.0",
     "vue": "^3.4.21",
+    "vue-pick-colors": "^1.6.3",
     "vue-router": "4",
     "vue-signature-pad": "^3.0.2"
   },

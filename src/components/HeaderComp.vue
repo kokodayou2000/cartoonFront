@@ -14,7 +14,7 @@ function doLogin() {
   loginDialog.value = true
 }
 const loginInfo = ref({
-  mail: '0306201202@tute.edu.cn',
+  mail: 'kokodayou2000@126.com',
   pwd: '123',
 } as ILoginInfo)
 function doLogout() {
@@ -65,12 +65,13 @@ function backHome() {
       <div v-if="user.id === ''" @click="doLogin">
         登录
       </div>
-      <div v-else style="display: flex" @click="doLogout">
-        <div>
+      <div v-else style="display: flex">
+        <div @click="doLogout">
+          <!--  TODO 模仿b漫那种鼠标 hover  能下拉      -->
           {{ user.name }}
         </div>
-        <el-button @click="router.push('/workbench')">
-          创作
+        <el-button @click="router.push('/manage')">
+          管理员
         </el-button>
       </div>
     </el-col>

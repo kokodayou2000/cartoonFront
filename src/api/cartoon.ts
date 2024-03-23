@@ -1,4 +1,4 @@
-import type { Banner, PageInfo, RawPad, UpdatePad } from '../types'
+import type {Banner, CartoonItem, PageInfo, RawPad, UpdatePad} from '../types'
 import { useGet, usePost } from './base'
 import { baseUrlApi } from './utils.ts'
 import {CartoonDetail, ChapterDetail} from "../types";
@@ -17,6 +17,14 @@ export function fetchCartoonDetail(id: string) {
 
 export function fetchChapterDetail(id: string) {
   return useGet<any, ChapterDetail[]>(baseUrlApi(`product-service/api/v1/chapter/chapterInfo/${id}`))
+}
+
+export function fetchMyCreate() {
+  return useGet<any, CartoonItem[]>(baseUrlApi(`product-service/api/v1/cartoon/meCreate`))
+}
+
+export function fetchMyJoin() {
+  return useGet<any, CartoonItem[]>(baseUrlApi(`product-service/api/v1/cartoon/meJoin`))
 }
 
 export function createPad(name: string) {

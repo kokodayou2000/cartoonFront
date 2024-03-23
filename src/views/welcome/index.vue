@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { activeBannerList, cartoonList } from '../../api/cartoon.ts'
 import type { Banner, CartoonItem, PageInfo } from '../../types'
 
@@ -11,7 +11,6 @@ defineOptions({
 
 const bannerList = ref([] as Banner[])
 const router = useRouter()
-const route = useRoute()
 const pageInfo = ref({} as PageInfo)
 const cartoonContent = ref([] as CartoonItem[])
 

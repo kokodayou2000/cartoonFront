@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { VueSignaturePad } from 'vue-signature-pad'
 import { onMounted, ref } from 'vue'
+import PickColors from 'vue-pick-colors'
 import { createPad, getPad, getPadList, updatePad } from '../api/cartoon.ts'
 import type { Pen, RawPad, UpdatePad } from '../types'
 
@@ -91,10 +92,6 @@ function dataURLToBlob(dataURL: string) {
 const backgroundColor = ref('#ffffff')
 const penColor = ref('#000000')
 
-function setColor() {
-  penColor.value = '#df53e1'
-}
-
 function create() {
   createPad(newPadName.value)
     .then((res) => {
@@ -134,6 +131,7 @@ function selectCurrentItem(item: RawPad) {
   getFromRemote()
   selectDialog.value = false
 }
+// TODO VueSignaturePad 源码，信息id字段，允许多人画画
 </script>
 
 <template>
@@ -153,9 +151,11 @@ function selectCurrentItem(item: RawPad) {
       </el-dialog>
     </teleport>
     {{ currentPad.name }}
+    <div>
+      <PickColors v-model:value="penColor" show-alpha />
+    </div>
     <VueSignaturePad ref="signaturePadRef" class="border" width="300px" height="600px" :options="{ backgroundColor, penColor }" />
     <div>
-      <h4>先登录后选择作品</h4>
       <el-button @click="select">
         选择作品
       </el-button>
@@ -176,9 +176,6 @@ function selectCurrentItem(item: RawPad) {
       </el-button>
       <el-button @click="updateRemote">
         将数据跟新到远程
-      </el-button>
-      <el-button @click="setColor">
-        设置颜色
       </el-button>
       <el-button @click="getFromRemote()">
         读取远程的
