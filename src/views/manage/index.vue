@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { CartoonItem, IUserInfo } from '../../types'
+import type { CartoonItem } from '../../types'
 import { fetchMyCreate, fetchMyJoin } from '../../api/cartoon.ts'
 
 defineOptions({

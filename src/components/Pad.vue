@@ -1,19 +1,35 @@
 <script lang="ts" setup>
 import { VueSignaturePad } from 'vue-signature-pad'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import PickColors from 'vue-pick-colors'
-import { createPad, getPad, getPadList, updatePad } from '../api/cartoon.ts'
+import { getPadList, updatePad } from '../api/cartoon.ts'
 import type { Pen, RawPad, UpdatePad } from '../types'
+import { useAuth } from '../use/useAuth.ts'
 
 defineOptions({
   name: 'MySignaturePad',
 })
-const signaturePadRef = ref()
-const selectDialog = ref(false)
-const rawPadList = ref([] as RawPad[])
-const currentPad = ref({} as RawPad)
-const newPadName = ref('')
 
+const props = withDefaults(defineProps<IProps>(), {
+  chapterId: '',
+})
+interface IProps {
+  chapterId: string
+}
+
+const { user } = useAuth()
+const signaturePadRef = ref()
+const signaturePadOtherRef = ref()
+const currentPadList = ref([] as RawPad[])
+const currentUserPad = computed(() => {
+  const index = currentPadList.value.findIndex((item) => {
+    return item.userId === user.value.id
+  })
+  return currentPadList.value[index]
+})
+const currentOtherPadList = computed(() => {
+  return currentPadList.value.filter(item => item.userId !== user.value.id)
+})
 function undo() {
   signaturePadRef.value.undoSignature()
 }
@@ -23,28 +39,27 @@ function save() {
     return
   download(data, 'filename')
 }
-function tempSave() {
-  const data = signaturePadRef.value.toData()
-  localStorage.setItem('temp', JSON.stringify(data))
-}
-
+// 讲数据更新到远程的时候
 function updateRemote() {
   const data = signaturePadRef.value.toData()
+  console.log(data)
+  console.log(currentUserPad.value)
   const updateReq = {
-    id: currentPad.value.id,
+    id: currentUserPad.value.id,
     penList: data,
   } as UpdatePad
   updatePad(updateReq).then(() => {})
 }
-// function getTemp() {
-//   const str = localStorage.getItem('temp')
-//   if (str !== null) {
-//     const parse = JSON.parse(str)
-//     signaturePadRef.value.fromData(parse)
-//   }
-// }
-
-function remoteSetTemp(data: Pen[]) {
+// 加载其他用户的画板
+function otherRawPad(data: Pen[]) {
+  const updateData = data.map((item) => {
+    item.color = '#4bb259'
+    return item
+  })
+  signaturePadOtherRef.value.fromData(updateData)
+}
+// 当前用户的画板
+function currentUserRawPad(data: Pen[]) {
   signaturePadRef.value.fromData(data)
 }
 function clear() {
@@ -78,37 +93,22 @@ function dataURLToBlob(dataURL: string) {
   return new Blob([uInt8Array], { type: contentType })
 }
 
-// const option = reactive({
-//   dotSize: (0.5 + 2.5) / 2,
-//   minWidth: 0.5,
-//   maxWidth: 2.5,
-//   throttle: 16,
-//   minDistance: 5,
-//   backgroundColor: 'rgb(255,255,255)',
-//   penColor: '#000',
-//   velocityFilterWeight: 0.7,
-// })
-
-const backgroundColor = ref('#ffffff')
 const penColor = ref('#000000')
-
-function create() {
-  createPad(newPadName.value)
-    .then((res) => {
-      if (res.code === 200) {
-        newPadName.value = ''
-        currentPad.value = res.data
-      }
-    })
-}
+const backgroundColor = ref('#ffffff00')
+const backgroundOtherColor = ref('#ffffff00')
 function getFromRemote() {
-  const id = currentPad.value.id
-  getPad(id)
+  getPadList(props.chapterId)
     .then((res) => {
       if (res.code === 200) {
         if (res.data !== undefined) {
-          currentPad.value = res.data
-          remoteSetTemp(currentPad.value.penList)
+          currentPadList.value = res.data
+          console.log(res.data)
+          // 加载当前用户的
+          currentUserRawPad(currentUserPad.value.penList)
+          currentOtherPadList.value.forEach((item) => {
+            // 加载其他用户的
+            otherRawPad(item.penList)
+          })
         }
       }
     })
@@ -117,57 +117,19 @@ function getFromRemote() {
 onMounted(() => {
   // getFromRemote('2009100556')
 })
-
-function select() {
-  getPadList().then((res) => {
-    if (res.data !== undefined) {
-      rawPadList.value = res.data
-      selectDialog.value = true
-    }
-  })
-}
-function selectCurrentItem(item: RawPad) {
-  currentPad.value = item
-  getFromRemote()
-  selectDialog.value = false
-}
-// TODO VueSignaturePad 源码，信息id字段，允许多人画画
 </script>
 
 <template>
   <div style="border: 1px red solid">
-    <teleport to="body">
-      <el-dialog v-model="selectDialog" title="选择" width="800">
-        <div v-for="item in rawPadList" :key="item.id" @click="selectCurrentItem(item)">
-          {{ item.name }}
-        </div>
-        <el-input v-model="newPadName">
-          <template #append>
-            <div @click="create">
-              新建
-            </div>
-          </template>
-        </el-input>
-      </el-dialog>
-    </teleport>
-    {{ currentPad.name }}
     <div>
       <PickColors v-model:value="penColor" show-alpha />
     </div>
-    <VueSignaturePad ref="signaturePadRef" class="border" width="300px" height="600px" :options="{ backgroundColor, penColor }" />
-    <div>
-      <el-button @click="select">
-        选择作品
-      </el-button>
+    <VueSignaturePad ref="signaturePadOtherRef" class="absolute" width="300px" height="600px" :options="{ backgroundOtherColor, penColor }" />
+    <VueSignaturePad ref="signaturePadRef" class="absolute border" width="300px" height="600px" :options="{ backgroundColor, penColor }" />
+    <div class="fixed">
       <el-button @click="save">
         保存
       </el-button>
-      <el-button @click="tempSave">
-        临时存储
-      </el-button>
-      <!--      <el-button @click="getTemp"> -->
-      <!--        读取本地的 -->
-      <!--      </el-button> -->
       <el-button @click="undo">
         撤销
       </el-button>
@@ -177,7 +139,7 @@ function selectCurrentItem(item: RawPad) {
       <el-button @click="updateRemote">
         将数据跟新到远程
       </el-button>
-      <el-button @click="getFromRemote()">
+      <el-button @click="getFromRemote">
         读取远程的
       </el-button>
     </div>

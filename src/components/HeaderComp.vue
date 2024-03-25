@@ -14,7 +14,7 @@ function doLogin() {
   loginDialog.value = true
 }
 const loginInfo = ref({
-  mail: 'kokodayou2000@126.com',
+  mail: '0306201202@tute.edu.cn',
   pwd: '123',
 } as ILoginInfo)
 function doLogout() {

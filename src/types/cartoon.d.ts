@@ -47,9 +47,9 @@ export interface UpdatePad {
 
 export interface RawPad {
   id: string
-  penList: Pen[]
+  paperId: string
   userId: string
-  name: string
+  penList: Pen[]
 }
 export interface Pen {
   color: string
@@ -66,14 +66,23 @@ export interface CartoonDetail {
   chapterList: ChapterInfo[]
 }
 
-// 章节详情
-export interface ChapterDetail {
+// 页面信息，包含图片，info
+export interface PaperDetail {
   id: string
   chapterId: string
   num: number
   url: string
   info: string
+  status: string
+  partners: string[]
   createBy: string
+}
+
+// 创建 paper 接口
+export interface CreatePaper {
+  chapterId: string
+  num: number
+  info: string
 }
 
 export interface ChapterInfo {

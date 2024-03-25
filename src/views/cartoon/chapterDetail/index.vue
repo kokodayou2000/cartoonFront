@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { onBeforeMount, ref } from 'vue'
-import { fetchChapterDetail } from '../../../api/cartoon.ts'
-import type { ChapterDetail } from '../../../types'
+import type { PaperDetail } from '../../../types'
+import { fetchFinishedPaperDetail } from '../../../api/cartoon.ts'
 
 defineOptions({
   name: 'ChapterDetail',
 })
 const route = useRoute()
-const chapterDetailList = ref([] as ChapterDetail[])
+const chapterDetailList = ref([] as PaperDetail[])
 onBeforeMount(() => {
   if (route.query.id && typeof route.query.id == 'string') {
-    fetchChapterDetail(route.query.id).then((res) => {
-      const resData = res.data as ChapterDetail[]
+    fetchFinishedPaperDetail(route.query.id).then((res) => {
+      const resData = res.data as PaperDetail[]
       chapterDetailList.value = resData
     })
   }
@@ -21,11 +21,10 @@ onBeforeMount(() => {
 
 <template>
   <div>
-    <div>
-    </div>
+    <div />
     <div>
       <div v-for="item in chapterDetailList" :key="item.id">
-        <img :src="item?.url" width="300px" />
+        <img :src="item?.url" width="300px">
       </div>
     </div>
   </div>

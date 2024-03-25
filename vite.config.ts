@@ -24,13 +24,13 @@ export default defineConfig({
   server: {
     port: 8777,
     host: LOCAL_ADDR,
-    proxy: {
-      '/api': {
-        // 这里填写后端地址
-        target: OMEN,
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, ''),
-      },
-    },
+    // proxy: {
+    //   '/api': {
+    //     // 这里填写后端地址
+    //     target: OMEN,
+    //     changeOrigin: true,
+    //     rewrite: path => path.replace(/^\/api/, ''),
+    //   },
+    // },
   },
 })
