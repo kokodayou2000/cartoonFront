@@ -2,8 +2,9 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosReques
 import axios from 'axios'
 import { useLocalStorage } from '../use/useLocalStorage.ts'
 
-const OMEN = 'http://10.12.0.143:8080'
+const OMEN = 'http://10.12.5.242:8080'
 // const LOCAL = 'http://127.0.0.1:8080'
+
 export const instance = axios.create({
   baseURL: OMEN,
   timeout: 10000,

@@ -5,6 +5,7 @@ export interface Banner {
   active: boolean
 }
 
+// 这个好像没用用到
 export interface ChapterItem {
   id: string
   cartoonId: string
@@ -61,6 +62,7 @@ export interface Point {
   y: number
 }
 
+// 包含漫画信息和章节信息
 export interface CartoonDetail {
   cartoonInfo: CartoonItem
   chapterList: ChapterInfo[]
@@ -78,6 +80,38 @@ export interface PaperDetail {
   createBy: string
 }
 
+export interface TempImg {
+
+  id: string
+  // 地址
+  imgUrl: string
+
+  // 上传的用户
+  userId: string
+  // 详情
+  info: string
+  // 上传时间
+  uploadTime: Date
+}
+
+export interface CreateCollaborateReq {
+  imgUrl: string
+  chapterId: string
+  chapterName: string
+  cartoonId: string
+  cartoonName: string
+  info: string
+  num: number
+}
+
+
+export interface CreateChapter {
+  cartoonId: string
+  num: number
+  free: boolean
+  title: string
+  info: string
+}
 // 创建 paper 接口
 export interface CreatePaper {
   chapterId: string
@@ -158,4 +192,19 @@ export interface Sort2 {
   sorted: boolean
   unsorted: boolean
   empty: boolean
+}
+
+export interface CollaborateItem {
+  id: string
+  imgUrl: string
+  info: string
+  cartoonId: string
+  cartoonName: string
+  patternId: string
+  chapterId: string
+  chapterName: string
+  num: number
+  uploadTime: string
+  pass: boolean
+  del: boolean
 }

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { VueSignaturePad } from 'vue-signature-pad'
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import PickColors from 'vue-pick-colors'
-import { getPadList, updatePad } from '../api/cartoon.ts'
+import { fetchUploadPaperTemp, getPadList, updatePad } from '../api/cartoon.ts'
 import type { Pen, RawPad, UpdatePad } from '../types'
 import { useAuth } from '../use/useAuth.ts'
 
@@ -21,6 +21,11 @@ const { user } = useAuth()
 const signaturePadRef = ref()
 const signaturePadOtherRef = ref()
 const currentPadList = ref([] as RawPad[])
+const penColor = ref('#000000')
+// 这个是放到下层了，不需要设置透明
+const backgroundColor = ref('#ffffff00')
+const backgroundOtherColor = ref('#ffffff00')
+
 const currentUserPad = computed(() => {
   const index = currentPadList.value.findIndex((item) => {
     return item.userId === user.value.id
@@ -42,14 +47,13 @@ function save() {
 // 讲数据更新到远程的时候
 function updateRemote() {
   const data = signaturePadRef.value.toData()
-  console.log(data)
-  console.log(currentUserPad.value)
   const updateReq = {
     id: currentUserPad.value.id,
     penList: data,
   } as UpdatePad
   updatePad(updateReq).then(() => {})
 }
+
 // 加载其他用户的画板
 function otherRawPad(data: Pen[]) {
   const updateData = data.map((item) => {
@@ -92,17 +96,40 @@ function dataURLToBlob(dataURL: string) {
     uInt8Array[i] = raw.charCodeAt(i)
   return new Blob([uInt8Array], { type: contentType })
 }
+function upload() {
+  backgroundColor.value = '#ffffff'
+  nextTick(doSomething).then(() => {
+    backgroundColor.value = '#ffffff'
+  })
+}
 
-const penColor = ref('#000000')
-const backgroundColor = ref('#ffffff00')
-const backgroundOtherColor = ref('#ffffff00')
+function doSomething() {
+  const otherData = signaturePadOtherRef.value.toData() as []
+  const currentData = signaturePadRef.value.toData() as []
+  currentData.push(...otherData)
+  signaturePadRef.value.fromData(currentData)
+  const { isEmpty, data } = signaturePadRef.value.saveSignature()
+  if (isEmpty)
+    return
+  const blob = dataURLToBlob(data)
+  const file = new File([blob], 'test.png')
+  uploadPaperTemp(file, 'test')
+}
+function uploadPaperTemp(file: File, info: string) {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('info', info)
+  fetchUploadPaperTemp(formData).then((res) => {
+    if (res.code === 200 && res.data !== null) { /* empty */ }
+  })
+}
+
 function getFromRemote() {
   getPadList(props.chapterId)
     .then((res) => {
       if (res.code === 200) {
         if (res.data !== undefined) {
           currentPadList.value = res.data
-          console.log(res.data)
           // 加载当前用户的
           currentUserRawPad(currentUserPad.value.penList)
           currentOtherPadList.value.forEach((item) => {
@@ -141,6 +168,9 @@ onMounted(() => {
       </el-button>
       <el-button @click="getFromRemote">
         读取远程的
+      </el-button>
+      <el-button @click="upload">
+        上传图片到服务器
       </el-button>
     </div>
   </div>

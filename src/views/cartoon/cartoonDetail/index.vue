@@ -37,40 +37,37 @@ function jumpChapterDetail(chapterInfo: ChapterInfo) {
 
 <template>
   <div>
-    <div>
-      <div>
-        {{ cartoonInfo?.title }}
-      </div>
-      <div>
-        <img :src="cartoonInfo?.coverUrl" width="100px">
-      </div>
-      <div>
-        <div v-for="tag in cartoonInfo?.tags" :key="tag">
+    <div class="bg-white p-5 border-4 shadow-lg flex">
+      <img :src="cartoonInfo?.coverUrl" width="230px">
+      <div class="flex-1 ml-6">
+        <div class="text-2xl">
+          {{ cartoonInfo?.title }}
+        </div>
+        <div v-for="tag in cartoonInfo?.tags" :key="tag" class="box-border">
           {{ tag }}
         </div>
-      </div>
-      <div>
-        {{ cartoonInfo?.introduction }}
-      </div>
-      <div>
-        {{ cartoonInfo?.status }}
-      </div>
-      <div>
-        {{ `参与者 ${cartoonInfo?.partners}` }}
-      </div>
-
-      <div>
-        {{ `最后更新时间 ${cartoonInfo?.lastUpdateTime}` }}
-      </div>
-      <div>
-        {{ `单集价格 ${cartoonInfo?.price}` }}
-      </div>
-      <div>
-        {{ `销量 ${cartoonInfo?.salesNum}` }}
+        <div class="font-thin">
+          {{ cartoonInfo?.introduction }}
+        </div>
+        <div class="font-thin">
+          {{ cartoonInfo?.status }}
+        </div>
+        <div class="font-thin">
+          {{ `参与者 ${cartoonInfo?.partners}` }}
+        </div>
+        <div class="font-thin">
+          {{ `最后更新时间 ${cartoonInfo?.lastUpdateTime}` }}
+        </div>
+        <div class="font-thin">
+          {{ `单集价格 ${cartoonInfo?.price}` }}
+        </div>
+        <div class="font-thin">
+          {{ `销量 ${cartoonInfo?.salesNum}` }}
+        </div>
       </div>
     </div>
-    <div>
-      <div v-for="item in chapterList" :key="item.id">
+    <div class="mt-2 flex flex-auto">
+      <div v-for="item in chapterList" :key="item.id" class="mr-6 border">
         <div @click="jumpChapterDetail(item)">
           {{ item.title }}
         </div>
@@ -80,5 +77,25 @@ function jumpChapterDetail(chapterInfo: ChapterInfo) {
 </template>
 
 <style scoped>
+.comic-tags {
+  margin-bottom: 10px;
+}
 
+.comic-tags span {
+  display: inline-block;
+  background-color: #eee;
+  color: #333;
+  padding: 4px 8px;
+  margin-right: 5px;
+  border-radius: 3px;
+}
+
+.comic-info {
+  margin-bottom: 10px;
+}
+
+.comic-price {
+  font-size: 18px;
+  font-weight: bold;
+}
 </style>
