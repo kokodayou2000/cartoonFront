@@ -13,8 +13,10 @@ const loginDialog = ref(false)
 function doLogin() {
   loginDialog.value = true
 }
+// kokodayou2000@126.com
+// 0306201202@tute.edu.cn
 const loginInfo = ref({
-  mail: '0306201202@tute.edu.cn',
+  mail: 'kokodayou2000@126.com',
   pwd: '123',
 } as ILoginInfo)
 function doLogout() {
@@ -36,7 +38,17 @@ function backHome() {
     <el-dialog v-model="loginDialog" title="登录" width="800">
       <el-form :model="loginInfo" label-width="auto" style="max-width: 600px">
         <el-form-item label="邮箱">
-          <el-input v-model="loginInfo.mail" />
+          <el-dropdown>
+            <el-button type="primary">
+              <el-input v-model="loginInfo.mail" disabled/>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="loginInfo.mail = 'kokodayou2000@126.com'">账号A</el-dropdown-item>
+                <el-dropdown-item @click="loginInfo.mail = '0306201202@tute.edu.cn'">账号B</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </el-form-item>
         <el-form-item label="密码">
           <el-input v-model="loginInfo.pwd" />
@@ -49,14 +61,14 @@ function backHome() {
       </el-form>
     </el-dialog>
   </teleport>
-  <el-row :gutter="20" class="mt-2">
+  <el-row :gutter="20" class="mt-2 bg-gray-50 text-center items-center font-black">
     <el-col :span="2" />
-    <el-col :span="8">
+    <el-col :span="6" class="font-black">
       <div @click="backHome">
         协作漫画
       </div>
     </el-col>
-    <el-col :span="10">
+    <el-col :span="6">
       <div>
         <el-input v-model="searchVal" placeholder="漫画名称" :suffix-icon="Search" />
       </div>
@@ -65,14 +77,20 @@ function backHome() {
       <div v-if="user.id === ''" @click="doLogin">
         登录
       </div>
-      <div v-else style="display: flex">
+      <div v-else>
         <div @click="doLogout">
-          <!--  TODO 模仿b漫那种鼠标 hover  能下拉      -->
-          {{ user.name }}
+          <el-avatar class="block" :size="50" :src="user.headImg" />
         </div>
-        <el-button @click="router.push('/manage')">
-          管理员
-        </el-button>
+      </div>
+    </el-col>
+    <el-col :span="3">
+      <div v-if="user.id !== ''" @click="router.push('/manage')">
+        后台
+      </div>
+    </el-col>
+    <el-col :span="3">
+      <div v-if="user.id !== ''">
+        <div>{{ `点数:${user.points}` }}</div>
       </div>
     </el-col>
   </el-row>
