@@ -7,7 +7,7 @@ import {
   fetchNeedCheckCollaborate,
   fetchPassCollaborate,
 } from '../../../api/cartoon.ts'
-import type { CartoonDetail, CartoonItem, ChapterInfo, CollaborateItem, CreateChapter, IUserInfo } from '../../../types'
+import type { CartoonDetail, ChapterInfo, CollaborateItem, CreateChapter, IUserInfo } from '../../../types'
 
 defineOptions({
   name: 'ManageCartoonDetail',
@@ -32,10 +32,11 @@ const searchUserName = ref('')
 const searchUserNameList = ref([] as IUserInfo[])
 
 // 新增参与者
-function addNewPatternFunc(item: CartoonItem) {
-  addNewPatternState.addNewPatternCartoonId = item.id
-  addNewPatternState.addNewPatternDialog = true
-}
+// function addNewPatternFunc(item: CartoonItem) {
+//   addNewPatternState.addNewPatternCartoonId = item.id
+//   addNewPatternState.addNewPatternDialog = true
+// }
+
 function confirmAddNewPattern(userId: string) {
   addNewPatternState.addNewPatternId = userId
   // TODO 新增
