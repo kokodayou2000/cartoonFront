@@ -7,7 +7,7 @@ export function useAuth() {
   const store = useUserStore()
   const user = computed(() => store.getUserInfo)
   const login = async (info: ILoginInfo) => {
-    const { code, data} = await auth(info)
+    const { code, data } = await auth(info)
     if (code === 200) {
       if (data !== undefined) {
         const { token, userInfo } = data as IAuth

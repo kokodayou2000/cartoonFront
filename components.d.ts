@@ -27,6 +27,8 @@ declare module 'vue' {
     ElMain: typeof import('element-plus/es')['ElMain']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    ElTabPane: typeof import('element-plus/es')['ElTabPane']
+    ElTabs: typeof import('element-plus/es')['ElTabs']
     HeaderComp: typeof import('./src/components/HeaderComp.vue')['default']
     MySignaturePad: typeof import('./src/components/MySignaturePad.vue')['default']
     Pad: typeof import('./src/components/Pad.vue')['default']

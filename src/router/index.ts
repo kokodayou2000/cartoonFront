@@ -4,8 +4,8 @@ import WorkBench from '../views/workbench/index.vue'
 import CartoonDetail from '../views/cartoon/cartoonDetail/index.vue'
 import ChapterDetail from '../views/cartoon/chapterDetail/index.vue'
 import Manage from '../views/manage/index.vue'
-import ManageCartoonDetail from "../views/manage/cartoonDetail/index.vue";
-import ManageChapterDetail from "../views/manage/chapterDetail/index.vue";
+import ManageCartoonDetail from '../views/manage/cartoonDetail/index.vue'
+import ManageChapterDetail from '../views/manage/chapterDetail/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

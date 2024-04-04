@@ -29,7 +29,7 @@ const router = useRouter()
 function addChapterPage(item: PaperDetail) {
   // 默认这个已经创建了 paper 和 rawPad
   createRawPad(item.id).then((res) => {
-    if (res.code === 200){
+    if (res.code === 200) {
       router.push({
         path: '/workbench',
         query: {

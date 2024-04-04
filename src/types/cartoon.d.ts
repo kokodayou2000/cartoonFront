@@ -104,7 +104,6 @@ export interface CreateCollaborateReq {
   num: number
 }
 
-
 export interface CreateChapter {
   cartoonId: string
   num: number

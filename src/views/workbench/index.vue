@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {LocationQueryValue, useRoute, useRouter} from 'vue-router'
+import type { LocationQueryValue } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { onBeforeMount } from 'vue'
 import MySignaturePad from '../../components/Pad.vue'
 

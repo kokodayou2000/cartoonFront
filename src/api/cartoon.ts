@@ -4,6 +4,7 @@ import type {
   CartoonDetail,
   CartoonItem,
   ChapterInfo,
+  CollaborateItem,
   CreateChapter,
   CreateCollaborateReq,
   CreatePaper,
@@ -15,7 +16,6 @@ import type {
 } from '../types'
 import { useGet, usePost } from './base'
 import { baseUrlApi } from './utils.ts'
-import {CollaborateItem} from "../types";
 
 export function activeBannerList() {
   return useGet<Banner[], Banner[] >(baseUrlApi('product-service/api/v1/banner/list'))
