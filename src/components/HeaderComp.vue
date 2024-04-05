@@ -10,7 +10,7 @@ const searchVal = ref('')
 const router = useRouter()
 const { user, login, logout } = useAuth()
 const captcha = ref('')
-const captchaImageUrl = ref('http://10.12.5.242:8080/user-service/api/v1/notify/getChapter')
+const captchaImageUrl = ref('http://10.12.5.242:8080/user-service/api/v1/notify/getChapter?')
 
 
 
