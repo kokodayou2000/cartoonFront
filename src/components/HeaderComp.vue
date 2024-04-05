@@ -96,7 +96,7 @@ async function registerConfirm() {
 //     throw new Error('验证码发送失败: ' + error.message);
 //   }
 // }
-async function sendVerificationCode(email, captcha) {
+async function sendVerificationCode(email:String, captcha:String) {
   try {
     // 使用 axios 发送请求到后端发送验证码接口
     console.log(email+"=="+captcha)
