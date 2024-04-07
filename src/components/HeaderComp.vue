@@ -50,7 +50,6 @@ const registerInfo = ref({
 async function registerConfirm() {
   if (validateForm()) {
     // 先发送验证码
-    try {
       await sendVerificationCode(registerInfo.value.mail, captcha.value);
       // 如果发送验证码成功，则继续注册流程
       const formData = new FormData();
@@ -64,13 +63,10 @@ async function registerConfirm() {
       if (response.data.success) {
         console.log('注册成功:', response.data);
       } else {
-        console.error('注册失败:', response.data.message);
+        console.error('注册失败:', response.data.msg);
         // 处理注册失败逻辑
       }
-    } catch (error) {
-      console.error('注册失败:',error.message);
-      // 处理注册失败逻辑
-    }
+
   }
 }
 
@@ -78,13 +74,13 @@ async function registerConfirm() {
 // async function sendVerificationCode(email, captcha) {
 //   try {
 //     // 使用 axios 发送请求到后端发送验证码接口
-//     const response = await axios.get(`http://10.12.5.242:8080/user-service/api/v1/notify/sendCode?to=${email}&captcha=${captcha}`);
-//     // const params = new URLSearchParams({
-//     //   to: email,
-//     //   captcha: captcha
-//     // }).toString();
-//     //
-//     // const response = await axios.get(`http://10.12.5.242:8080/user-service/api/v1/notify/sendCode?`+params)
+//     //const response = await axios.get(`http://10.12.5.242:8080/user-service/api/v1/notify/sendCode?to=${email}&captcha=${captcha}`);
+//     const params = new URLSearchParams({
+//       to: email,
+//       captcha: captcha
+//     }).toString();
+//
+//     const response = await axios.get(`http://10.12.5.242:8080/user-service/api/v1/notify/sendCode?`+params)
 //
 //     // 根据后端返回的数据进行处理
 //     if (response.data.success) {
@@ -97,19 +93,16 @@ async function registerConfirm() {
 //   }
 // }
 async function sendVerificationCode(email:String, captcha:String) {
-  try {
+
     // 使用 axios 发送请求到后端发送验证码接口
     console.log(email+"=="+captcha)
     const response = await axios.get(`http://10.12.5.242:8080/user-service/api/v1/notify/sendCode?to=${email}&captcha=${captcha}`)
+    console.log(response.data)
     // 根据后端返回的数据进行处理
-    if (response.data.success)
+    if (response.data.code==0)
       console.log('验证码发送成功')
     else
-      throw new Error(`验证码发送失败: ${response.data.message}`)
-  }
-  catch (error) {
-    throw new Error(`验证码发送失败: ${error.message}`)
-  }
+      throw new Error(`验证码发送失败: ${response.data.msg}`)
 }
 
 function validateForm() {
