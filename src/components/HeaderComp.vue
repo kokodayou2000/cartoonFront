@@ -42,30 +42,39 @@ function doRegister(){
   registerDialog.value=true
 }
 const registerInfo = ref({
+  code:'',
+  head_img:'',
   mail: '',
   username: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword:'',
 })
 async function registerConfirm() {
   if (validateForm()) {
-    // 先发送验证码
-      await sendVerificationCode(registerInfo.value.mail, captcha.value);
-      // 如果发送验证码成功，则继续注册流程
-      const formData = new FormData();
-      formData.append('username', registerInfo.value.username);
-      formData.append('password', registerInfo.value.password);
-      formData.append('email', registerInfo.value.mail);
-      formData.append('captcha', captcha.value);
-      // 向后端发送注册请求
-      const response = await axios.post('http://10.12.5.242:8080/user-service/api/user/v1/register', formData);
-      // 注册成功后的逻辑处理
-      if (response.data.success) {
-        console.log('注册成功:', response.data);
-      } else {
-        console.error('注册失败:', response.data.msg);
-        // 处理注册失败逻辑
-      }
+try {
+  // 如果发送验证码成功，则继续注册流程
+  const registerData = {
+    code: registerInfo.value.code,
+    head_img: "http://10.12.5.242:9000/cartoon/wv368oaKPl.png",
+    mail: registerInfo.value.mail,
+    name: registerInfo.value.username,
+    pwd: registerInfo.value.password
+  };
+  console.log(registerInfo.value.code+"-"+registerInfo.value.mail)
+  // 向后端发送注册请求
+  const response = await axios.post(`http://10.12.5.242:8080/user-service/api/v1/user/register`, registerData);
+  // 注册成功后的逻辑处理
+  if (response.data.success) {
+    console.log('注册成功:', response.data);
+  } else {
+    console.log(response.data+"-"+response.data.msg+"-"+response.data.code+"-")
+    console.error('注册失败:', response.data.msg);
+    // 处理注册失败逻辑
+  }
+}catch (error) {
+    throw new Error('注册失败: ' + error.msg);
+  }
+
 
   }
 }
@@ -92,6 +101,10 @@ async function registerConfirm() {
 //     throw new Error('验证码发送失败: ' + error.message);
 //   }
 // }
+async function sendVerifictionCodewait(){
+  // 先发送验证码
+  await sendVerificationCode(registerInfo.value.mail, captcha.value);
+}
 async function sendVerificationCode(email:String, captcha:String) {
 
     // 使用 axios 发送请求到后端发送验证码接口
@@ -120,9 +133,10 @@ function validateForm() {
   return true
 }
 
-async function fetchCaptchaImage() {
+function fetchCaptchaImage(){
   captchaImageUrl.value='http://10.12.5.242:8080/user-service/api/v1/notify/getChapter?'
 }
+
 
 
 
@@ -237,11 +251,15 @@ function showQRCode(qrCodeUrl: string) {
         <el-form-item label="确认密码">
           <el-input v-model="registerInfo.confirmPassword" type="password" />
         </el-form-item>
-        <el-form-item label="验证码">
-          <el-input v-model="captcha" />
-          <img :src="captchaImageUrl" @click="fetchCaptchaImage" alt="captcha" style="cursor: pointer;">
+        <el-form-item label="验证码" style="display: flex; align-items: center;">
+          <el-input v-model="captcha" placeholder="请输入图形验证码发送邮件"/>
+          <img :src="captchaImageUrl" @click="fetchCaptchaImage" alt="captcha" style="cursor: pointer; margin-left: 10px;">
+          <el-button @click="sendVerifictionCodewait" type="primary" style="margin-left: 10px;">
+            发送
+          </el-button>
         </el-form-item>
-        <el-form-item>
+        <el-form-item label="注册验证码" style="display: flex; align-items: center;">
+          <el-input v-model="registerInfo.code"/>
           <el-button @click="registerConfirm" type="primary">
             注册
           </el-button>
