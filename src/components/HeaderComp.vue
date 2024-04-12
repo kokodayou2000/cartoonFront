@@ -34,6 +34,7 @@ function loginConfirm() {
     loginDialog.value = false
   })
 }
+
 function backHome() {
   router.push('/')
 }
