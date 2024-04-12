@@ -79,28 +79,6 @@ try {
   }
 }
 
-// 发送验证码函数
-// async function sendVerificationCode(email, captcha) {
-//   try {
-//     // 使用 axios 发送请求到后端发送验证码接口
-//     //const response = await axios.get(`http://10.12.5.242:8080/user-service/api/v1/notify/sendCode?to=${email}&captcha=${captcha}`);
-//     const params = new URLSearchParams({
-//       to: email,
-//       captcha: captcha
-//     }).toString();
-//
-//     const response = await axios.get(`http://10.12.5.242:8080/user-service/api/v1/notify/sendCode?`+params)
-//
-//     // 根据后端返回的数据进行处理
-//     if (response.data.success) {
-//       console.log('验证码发送成功');
-//     } else {
-//       throw new Error('验证码发送失败: ' + response.data.message);
-//     }
-//   } catch (error) {
-//     throw new Error('验证码发送失败: ' + error.message);
-//   }
-// }
 async function sendVerifictionCodewait(){
   // 先发送验证码
   await sendVerificationCode(registerInfo.value.mail, captcha.value);
