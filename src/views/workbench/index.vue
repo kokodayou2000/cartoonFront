@@ -21,15 +21,14 @@ onBeforeMount(() => {})
 <template>
   <div>
     <div>
-      漫画页的信息
       {{ route.query.paperId }}
     </div>
     <div>
       <MySignaturePad :chapter-id="check(route.query.paperId)" />
     </div>
-    <el-button @click="router.back()">
-      返回
-    </el-button>
+<!--    <el-button @click="router.back()">-->
+<!--      返回-->
+<!--    </el-button>-->
   </div>
 </template>
 

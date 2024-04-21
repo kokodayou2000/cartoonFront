@@ -2,8 +2,8 @@
 import { VueSignaturePad } from 'vue-signature-pad'
 import { computed, nextTick, onMounted, ref } from 'vue'
 import PickColors from 'vue-pick-colors'
-import { fetchUploadPaperTemp, getPadList, updatePad } from '../api/cartoon.ts'
-import type { Pen, RawPad, UpdatePad } from '../types'
+import {fetchUploadPaperTemp, getPadList, updatePad} from '../api/cartoon.ts'
+import type {Pen, RawPad, UpdatePad} from '../types'
 import { useAuth } from '../use/useAuth.ts'
 
 defineOptions({
@@ -13,6 +13,7 @@ defineOptions({
 const props = withDefaults(defineProps<IProps>(), {
   chapterId: '',
 })
+
 interface IProps {
   chapterId: string
 }
@@ -32,56 +33,39 @@ const currentUserPad = computed(() => {
   })
   return currentPadList.value[index]
 })
+
 const currentOtherPadList = computed(() => {
   return currentPadList.value.filter(item => item.userId !== user.value.id)
 })
+
 function undo() {
   signaturePadRef.value.undoSignature()
-}
-function save() {
-  const { isEmpty, data } = signaturePadRef.value.saveSignature()
-  if (isEmpty)
-    return
-  download(data, 'filename')
-}
-// 讲数据更新到远程的时候
-function updateRemote() {
-  const data = signaturePadRef.value.toData()
-  const updateReq = {
-    id: currentUserPad.value.id,
-    penList: data,
-  } as UpdatePad
-  updatePad(updateReq).then(() => {})
 }
 
 // 加载其他用户的画板
 function otherRawPad(data: Pen[]) {
   const updateData = data.map((item) => {
-    item.color = '#4bb259'
+    item.color = '#1feae2'
     return item
   })
   signaturePadOtherRef.value.fromData(updateData)
 }
+
 // 当前用户的画板
 function currentUserRawPad(data: Pen[]) {
   signaturePadRef.value.fromData(data)
 }
-function clear() {
-  signaturePadRef.value.clearSignature()
-}
 
-function download(dataURL: string, filename: string) {
+// 下载图片
+function downLoadImg(dataURL: string, filename: string) {
   const blob = dataURLToBlob(dataURL)
   const url = window.URL.createObjectURL(blob)
-
   const a = document.createElement('a')
   // a.style = 'display: none'
   a.href = url
   a.download = filename
-
   document.body.appendChild(a)
   a.click()
-
   window.URL.revokeObjectURL(url)
 }
 
@@ -95,12 +79,6 @@ function dataURLToBlob(dataURL: string) {
   for (let i = 0; i < rawLength; ++i)
     uInt8Array[i] = raw.charCodeAt(i)
   return new Blob([uInt8Array], { type: contentType })
-}
-function upload() {
-  backgroundColor.value = '#ffffff'
-  nextTick(doSomething).then(() => {
-    backgroundColor.value = '#ffffff'
-  })
 }
 
 function doSomething() {
@@ -141,37 +119,71 @@ function getFromRemote() {
     })
 }
 
+function upload() {
+  backgroundColor.value = '#ffffff'
+  nextTick(doSomething).then(() => {
+    backgroundColor.value = '#ffffff'
+  })
+}
+
+// function save() {
+//   const { isEmpty, data } = signaturePadRef.value.saveSignature()
+//   if (isEmpty)
+//     return
+//   download(data, 'filename')
+// }
+// function clear() {
+//   signaturePadRef.value.clearSignature()
+// }
+
+
+function updateRemote() {
+  const data = signaturePadRef.value.toData()
+  const updateReq = {
+    id: currentUserPad.value.id,
+    penList: data,
+  } as UpdatePad
+  updatePad(updateReq).then(() => {})
+}
+
+function onBegin() {}
+
+function onEnd() {
+  updateRemote()
+}
 onMounted(() => {
-  // getFromRemote('2009100556')
+  getFromRemote()
 })
 </script>
 
 <template>
-  <div style="border: 1px red solid">
-    <div>
-      <PickColors v-model:value="penColor" show-alpha />
+  <div>
+    <div class="w-1/2 float-left">
+      <VueSignaturePad ref="signaturePadOtherRef" class="absolute" width="300px" height="600px" :options="{ backgroundOtherColor, penColor }" />
+      <VueSignaturePad ref="signaturePadRef" class="absolute border" width="300px" height="600px" :options="{ backgroundColor, penColor, onBegin, onEnd }" />
     </div>
-    <VueSignaturePad ref="signaturePadOtherRef" class="absolute" width="300px" height="600px" :options="{ backgroundOtherColor, penColor }" />
-    <VueSignaturePad ref="signaturePadRef" class="absolute border" width="300px" height="600px" :options="{ backgroundColor, penColor }" />
-    <div class="fixed">
-      <el-button @click="save">
-        保存
-      </el-button>
-      <el-button @click="undo">
-        撤销
-      </el-button>
-      <el-button @click="clear">
-        清理
-      </el-button>
-      <el-button @click="updateRemote">
-        将数据跟新到远程
-      </el-button>
-      <el-button @click="getFromRemote">
-        读取远程的
-      </el-button>
-      <el-button @click="upload">
-        上传图片到服务器
-      </el-button>
+    <div class="w-1/2 float-right">
+      <div>
+        <PickColors v-model:value="penColor" show-alpha />
+        <el-button @click="undo">
+          撤销
+        </el-button>
+        <!--        <el-button @click="save"> -->
+        <!--          保存到本地 -->
+        <!--        </el-button> -->
+        <!--        <el-button @click="clear"> -->
+        <!--          清理 -->
+        <!--        </el-button> -->
+        <!--        <el-button @click="updateRemote"> -->
+        <!--          将数据跟新到远程 -->
+        <!--        </el-button> -->
+        <!--        <el-button @click="getFromRemote"> -->
+        <!--          读取远程的 -->
+        <!--        </el-button> -->
+        <el-button @click="upload">
+          上传
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
