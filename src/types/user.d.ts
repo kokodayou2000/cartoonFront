@@ -27,3 +27,11 @@ export interface IAuth {
   userInfo: IUserInfo
   token: stirng
 }
+
+export interface IRegister {
+  code: string
+  head_img: string
+  mail: string
+  name: string
+  pwd: string
+}

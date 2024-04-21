@@ -6,7 +6,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 
-export const OMEN = 'http://10.12.0.143:8080'
+export const OMEN = 'http://10.12.39.67/:8080'
 export const LOCAL = 'http://127.0.0.1:8080'
 
 // const SERVER_ADDR = '10.12.0.143'

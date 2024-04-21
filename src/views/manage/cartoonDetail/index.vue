@@ -50,8 +50,7 @@ const chapterList = computed(() => {
 function init() {
   if (route.query.id && typeof route.query.id == 'string') {
     fetchCartoonDetail(route.query.id).then((res) => {
-      const resData = res.data as CartoonDetail
-      cartoonDetail.value = resData
+      cartoonDetail.value = res.data as CartoonDetail
       createChapterState.cartoonId = cartoonDetail.value.cartoonInfo.id
       createChapterState.num = cartoonDetail.value.chapterList.length + 1
     })
@@ -158,7 +157,7 @@ onBeforeMount(() => {
     </el-dialog>
   </div>
   <div class="bg-white p-5 border-4 shadow-lg flex">
-    <img :src="cartoonInfo?.coverUrl" width="230px">
+    <img :src="cartoonInfo?.coverUrl"  alt="" width="230px">
     <div class="flex-1 ml-6">
       <div class="text-2xl">
         {{ cartoonInfo?.title }}
