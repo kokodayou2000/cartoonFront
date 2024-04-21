@@ -26,6 +26,7 @@ const penColor = ref('#000000')
 // 这个是放到下层了，不需要设置透明
 const backgroundColor = ref('#ffffff00')
 const backgroundOtherColor = ref('#ffffff00')
+const info = ref('')
 
 const currentUserPad = computed(() => {
   const index = currentPadList.value.findIndex((item) => {
@@ -91,7 +92,8 @@ function doSomething() {
     return
   const blob = dataURLToBlob(data)
   const file = new File([blob], 'test.png')
-  uploadPaperTemp(file, 'test')
+  //
+  uploadPaperTemp(file, info.value)
 }
 function uploadPaperTemp(file: File, info: string) {
   const formData = new FormData()
@@ -136,7 +138,6 @@ function upload() {
 //   signaturePadRef.value.clearSignature()
 // }
 
-
 function updateRemote() {
   const data = signaturePadRef.value.toData()
   const updateReq = {
@@ -165,6 +166,7 @@ onMounted(() => {
     <div class="w-1/2 float-right">
       <div>
         <PickColors v-model:value="penColor" show-alpha />
+        <input v-model="info" placeholder="请输入页面信息" />
         <el-button @click="undo">
           撤销
         </el-button>

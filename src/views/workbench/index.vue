@@ -26,9 +26,9 @@ onBeforeMount(() => {})
     <div>
       <MySignaturePad :chapter-id="check(route.query.paperId)" />
     </div>
-<!--    <el-button @click="router.back()">-->
-<!--      返回-->
-<!--    </el-button>-->
+    <!--    <el-button @click="router.back()"> -->
+    <!--      返回 -->
+    <!--    </el-button> -->
   </div>
 </template>
 

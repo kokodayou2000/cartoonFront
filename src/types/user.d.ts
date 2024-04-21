@@ -23,6 +23,14 @@ export interface IUserInfo {
   mail: string
 }
 
+export interface IUserVO {
+  id: string
+  name: string
+  headImg: string
+  points: number
+  mail: string
+}
+
 export interface IAuth {
   userInfo: IUserInfo
   token: stirng

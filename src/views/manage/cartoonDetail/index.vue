@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { computed, onBeforeMount, reactive, ref } from 'vue'
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import {
   createNewChapter,
   fetchCartoonDetail,
@@ -8,6 +8,7 @@ import {
   fetchPassCollaborate,
 } from '../../../api/cartoon.ts'
 import type { CartoonDetail, ChapterInfo, CollaborateItem, CreateChapter, IUserInfo } from '../../../types'
+import { userInfoApi } from '../../../api/user.ts'
 
 defineOptions({
   name: 'ManageCartoonDetail',
@@ -86,6 +87,21 @@ function pass(item: CollaborateItem) {
       leftDrawer.value = false
   })
 }
+const nameList = ref([] as string[])
+
+function loadName() {
+  cartoonInfo.value?.partners.forEach((id) => {
+    userInfoApi(id).then((res) => {
+      if (res.code === 200 && res.data !== undefined)
+        nameList.value.push(res.data.name)
+    })
+  })
+}
+
+watch(cartoonInfo, () => {
+  // 当加载漫画信息后获取用户姓名
+  loadName()
+})
 onBeforeMount(() => {
   init()
 })
@@ -93,7 +109,6 @@ onBeforeMount(() => {
 
 <template>
   <div>
-    {{ createChapterState }}
     <el-drawer
       v-model="leftDrawer"
       size="30%"
@@ -157,7 +172,7 @@ onBeforeMount(() => {
     </el-dialog>
   </div>
   <div class="bg-white p-5 border-4 shadow-lg flex">
-    <img :src="cartoonInfo?.coverUrl"  alt="" width="230px">
+    <img :src="cartoonInfo?.coverUrl" alt="" width="230px">
     <div class="flex-1 ml-6">
       <div class="text-2xl">
         {{ cartoonInfo?.title }}
@@ -172,7 +187,7 @@ onBeforeMount(() => {
         {{ cartoonInfo?.status }}
       </div>
       <div class="font-thin">
-        {{ `参与者 ${cartoonInfo?.partners}` }}
+        {{ `参与者 ${nameList}` }}
       </div>
       <div class="font-thin">
         {{ `最后更新时间 ${cartoonInfo?.lastUpdateTime}` }}
@@ -189,13 +204,13 @@ onBeforeMount(() => {
     </div>
   </div>
   <div>
-    <div class="grid grid-cols-6">
+    <div class="grid grid-cols-4">
       <div v-for="item in chapterList" :key="item.id" @click="jumpChapterDetail(item)">
-        <div class="font-black">
+        <div class="border-2 m-1 font-black">
           {{ `${item.num}章 : ${item.title}` }}
         </div>
       </div>
-      <div @click="newPage = true">
+      <div class="border-2 m-1 font-black" @click="newPage = true">
         新增章节
       </div>
     </div>

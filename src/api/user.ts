@@ -1,4 +1,4 @@
-import type { IAuth, ILoginInfo, IRegister } from '../types'
+import type {IAuth, ILoginInfo, IRegister, IUserInfo} from '../types'
 
 import { useGet, usePost } from './base'
 import { baseUrlApi } from './utils.ts'
@@ -35,5 +35,11 @@ export function getChapterApi() {
 export function sendEmailCaptchaCodeApi(email: string, captcha: string) {
   return useGet(
     baseUrlApi(`user-service/api/v1/notify/sendCode?to=${email}&captcha=${captcha}`),
+  )
+}
+
+export function userInfoApi(id: string) {
+  return useGet<string,IUserInfo>(
+    baseUrlApi(`user-service/api/v1/user/info/${id}`),
   )
 }
