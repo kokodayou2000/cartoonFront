@@ -53,7 +53,7 @@ const doingPaperList = computed(() => {
 })
 const createPaperState = reactive({
   chapterId: route.query.id,
-  num: 0,
+  num: 1,
   info: '',
 } as CreatePaper)
 const createPaperDialog = ref(false)
@@ -116,7 +116,12 @@ function uploadCollaborate() {
       innerDrawer.value = false
   })
 }
-
+function showStatus(status: string) {
+  if (status === 'DOING')
+    return '创作中'
+  else
+    return '完成'
+}
 onBeforeMount(() => {
   // 获取全部的
   if (route.query.id && typeof route.query.id == 'string') {
@@ -190,40 +195,45 @@ onBeforeMount(() => {
     </el-drawer>
     <el-dialog
       v-model="createPaperDialog"
-      title="Tips"
+      title="新增漫画页"
       width="500"
     >
-      <el-input-number v-model="createPaperState.num" />
-      <el-input v-model="createPaperState.info" />
-      <template #footer>
-        <div class="dialog-footer">
+      <el-form v-model="createPaperState">
+        <el-form-item label="页码">
+          <el-input-number v-model="createPaperState.num" />
+        </el-form-item>
+        <el-form-item label="信息">
+          <el-input v-model="createPaperState.info" />
+        </el-form-item>
+        <el-form-item>
           <el-button @click="createPaperDialog = false">
             取消
           </el-button>
-          <el-button type="primary" @click="addNewPaper" />
-        </div>
-      </template>
+          <el-button @click="addNewPaper">
+            确定
+          </el-button>
+        </el-form-item>
+      </el-form>
     </el-dialog>
-    <div>
-    <!--  TODO 获取当前章节参与者    -->
+    <div class="p-10 border-2" @click="createPaperDialog = true">
+      新增漫画
     </div>
-    <div>
-      <!--  TODO 从漫画参与者中选取章节参与者 -->
-      新增章节参与者
+    <div class="p-3 border-2 " @click="showMeUpdate">
+      我上传的漫画页
     </div>
-    <div @click="showMeUpdate">
-      我创建的
+    <div v-for="item in doingPaperList" :key="item.id" class="border-1 p-2 bg-gray-100" style="width: 300px" @click="addChapterPage(item)">
+      {{ `页码${item.num}` }}
+      {{ item.info }}
+      <div>
+        {{ showStatus(item.status) }}
+      </div>
     </div>
-    <div>
-      <div v-for="item in finishedPaperList" :key="item.id">
+    <div v-for="item in finishedPaperList" :key="item.id">
+      <div>
         <img :src="item?.url" width="300px">
-      </div>
-      <div v-for="item in doingPaperList" :key="item.id" class="border-2" style="width: 300px;height: 600px" @click="addChapterPage(item)">
-        创作
-        {{ item.info }}
-      </div>
-      <div @click="createPaperDialog = true">
-        新增
+        <div>
+          {{ showStatus(item.status) }}
+        </div>
       </div>
     </div>
   </div>

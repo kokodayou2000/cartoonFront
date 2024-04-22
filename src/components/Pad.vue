@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { VueSignaturePad } from 'vue-signature-pad'
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import PickColors from 'vue-pick-colors'
-import {fetchUploadPaperTemp, getPadList, updatePad} from '../api/cartoon.ts'
-import type {Pen, RawPad, UpdatePad} from '../types'
+import { fetchUploadPaperTemp, getPadList, updatePad } from '../api/cartoon.ts'
+import type { Pen, RawPad, UpdatePad } from '../types'
 import { useAuth } from '../use/useAuth.ts'
 
 defineOptions({
@@ -45,6 +45,8 @@ function undo() {
 
 // 加载其他用户的画板
 function otherRawPad(data: Pen[]) {
+  console.log("Other")
+  console.log(data)
   const updateData = data.map((item) => {
     item.color = '#1feae2'
     return item
@@ -58,17 +60,17 @@ function currentUserRawPad(data: Pen[]) {
 }
 
 // 下载图片
-function downLoadImg(dataURL: string, filename: string) {
-  const blob = dataURLToBlob(dataURL)
-  const url = window.URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  // a.style = 'display: none'
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  window.URL.revokeObjectURL(url)
-}
+// function downLoadImg(dataURL: string, filename: string) {
+//   const blob = dataURLToBlob(dataURL)
+//   const url = window.URL.createObjectURL(blob)
+//   const a = document.createElement('a')
+//   // a.style = 'display: none'
+//   a.href = url
+//   a.download = filename
+//   document.body.appendChild(a)
+//   a.click()
+//   window.URL.revokeObjectURL(url)
+// }
 
 function dataURLToBlob(dataURL: string) {
   // Code taken from https://github.com/ebidel/filer.js
@@ -103,8 +105,29 @@ function uploadPaperTemp(file: File, info: string) {
     if (res.code === 200 && res.data !== null) { /* empty */ }
   })
 }
-
+let timeId
+function intervalGetOtherFromRemote() {
+  timeId = setInterval(getOtherFromRemote, 1500)
+}
+function getOtherFromRemote() {
+  // 获取全部的
+  getPadList(props.chapterId)
+    .then((res) => {
+      if (res.code === 200) {
+        if (res.data === undefined || res.data === null) { /* empty */ }
+        else {
+          currentPadList.value = res.data
+          // 获取从后台加载的数据
+          currentOtherPadList.value.forEach((item) => {
+            // 加载其他用户的
+            otherRawPad(item.penList)
+          })
+        }
+      }
+    })
+}
 function getFromRemote() {
+  // 获取全部的
   getPadList(props.chapterId)
     .then((res) => {
       if (res.code === 200) {
@@ -152,8 +175,12 @@ function onBegin() {}
 function onEnd() {
   updateRemote()
 }
+onUnmounted(() => {
+  clearInterval(timeId)
+})
 onMounted(() => {
   getFromRemote()
+  intervalGetOtherFromRemote()
 })
 </script>
 
@@ -166,7 +193,7 @@ onMounted(() => {
     <div class="w-1/2 float-right">
       <div>
         <PickColors v-model:value="penColor" show-alpha />
-        <input v-model="info" placeholder="请输入页面信息" />
+        <input v-model="info" placeholder="请输入页面信息">
         <el-button @click="undo">
           撤销
         </el-button>

@@ -21,7 +21,6 @@ onBeforeMount(() => {
 
 <template>
   <div>
-    <div />
     <div>
       <div v-for="item in chapterDetailList" :key="item.id">
         <img :src="item?.url" width="300px">

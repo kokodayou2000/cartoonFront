@@ -77,10 +77,6 @@ function jumpChapterDetail(chapterInfo: ChapterInfo) {
 </template>
 
 <style scoped>
-.comic-tags {
-  margin-bottom: 10px;
-}
-
 .comic-tags span {
   display: inline-block;
   background-color: #eee;
@@ -90,12 +86,4 @@ function jumpChapterDetail(chapterInfo: ChapterInfo) {
   border-radius: 3px;
 }
 
-.comic-info {
-  margin-bottom: 10px;
-}
-
-.comic-price {
-  font-size: 18px;
-  font-weight: bold;
-}
 </style>
