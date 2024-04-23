@@ -5,6 +5,7 @@ import type {
   CartoonItem,
   ChapterInfo,
   CollaborateItem,
+  CreateCartoon,
   CreateChapter,
   CreateCollaborateReq,
   CreatePaper,
@@ -119,4 +120,16 @@ export function fetchNeedCheckCollaborate(cartoonId: string) {
 
 export function fetchPassCollaborate(collaborateId: string) {
   return usePost<any, any>(baseUrlApi(`product-service/api/v1/collaborate/toPaper/${collaborateId}`))
+}
+
+export function fetchCreateCartoon({ title, introduction, price, tags }: CreateCartoon) {
+  return usePost<any, any>(
+    baseUrlApi('product-service/api/v1/cartoon/createCartoon'),
+    {
+      title,
+      introduction,
+      price,
+      tags,
+    } as CreateCartoon,
+  )
 }

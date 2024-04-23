@@ -172,6 +172,13 @@ export interface CartoonItem {
   lastUpdateTime: string
 }
 
+export interface CreateCartoon {
+  title: string
+  introduction: string
+  price: number
+  tags: string[]
+}
+
 export interface Pageable {
   sort: Sort
   pageNumber: number

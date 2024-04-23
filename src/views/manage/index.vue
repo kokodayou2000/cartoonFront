@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { CartoonItem } from '../../types'
-import { fetchMyCreate, fetchMyJoin } from '../../api/cartoon.ts'
+import type { CartoonItem, CreateCartoon } from '../../types'
+import { fetchCreateCartoon, fetchMyCreate, fetchMyJoin } from '../../api/cartoon.ts'
 
 defineOptions({
   name: 'Manage',
@@ -33,6 +33,26 @@ function jumpManageCartoonDetail(id: string) {
     },
   })
 }
+const createCartoonVisible = ref(false)
+
+const createCartoonItem = reactive({
+  title: '',
+  introduction: '',
+  tags: [],
+  price: 0,
+} as CreateCartoon)
+
+const currentTags = ref('')
+function createCartoonVisibleConfirm() {
+  fetchCreateCartoon(createCartoonItem).then(() => {})
+  createCartoonVisible.value = false
+}
+function addTags() {
+  createCartoonItem.tags.push(currentTags.value)
+}
+function removeTags() {
+  createCartoonItem.tags.pop()
+}
 onMounted(() => {
   getMeCreate()
   getMeJoin()
@@ -41,6 +61,44 @@ onMounted(() => {
 
 <template>
   <div>
+    <el-dialog v-model="createCartoonVisible" :show-close="false" width="500">
+      <el-form :model="createCartoonItem">
+        <el-form-item label="漫画名称">
+          <el-input v-model="createCartoonItem.title" />
+        </el-form-item>
+        <el-form-item label="简介">
+          <el-input v-model="createCartoonItem.introduction" />
+        </el-form-item>
+        <el-form-item label="价格">
+          <el-input-number v-model="createCartoonItem.price" />
+        </el-form-item>
+        <el-form-item label="标签">
+          <el-tag
+            v-for="(item, index) in createCartoonItem.tags"
+            :key="index"
+          >
+            {{ item }}
+          </el-tag>
+          <div>
+            <el-input v-model="currentTags" />
+            <el-button @click="addTags">
+              新增
+            </el-button>
+            <el-button @click="removeTags">
+              删除
+            </el-button>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="createCartoonVisible = false">
+            取消
+          </el-button>
+          <el-button @click="createCartoonVisibleConfirm">
+            确定
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <div class="flex">
       <div class="font-black">
         我创建的
@@ -60,16 +118,8 @@ onMounted(() => {
       </div>
     </div>
     <div class="flex">
-      <el-button>
+      <el-button @click="createCartoonVisible = true">
         创建漫画
-      </el-button>
-      <!--        TODO 管理员审核漫画 -->
-      <el-button>
-        需要审核的画面
-      </el-button>
-      <!--        TODO 本人上传但是还未通过审核的画 -->
-      <el-button>
-        我的上传
       </el-button>
     </div>
   </div>
